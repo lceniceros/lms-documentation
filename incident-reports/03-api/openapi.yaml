@@ -1,0 +1,409 @@
+openapi: 3.0.3
+info:
+  title: Incident Reports API
+  version: 0.1.0
+  description: List, details, actions, and catalogs for Incident Reports table revamp (feature-flagged)
+servers:
+  - url: /
+paths:
+  /incident-reports:
+    get:
+      summary: List incident reports
+      parameters:
+        - in: query
+          name: page
+          schema: { type: integer, minimum: 1, default: 1 }
+        - in: query
+          name: pageSize
+          schema: { type: integer, minimum: 1, maximum: 200, default: 100 }
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            enum: [id, type, status, workflowStage, severity, location, department, reportDate, incidentDate, lastUpdatedAt, resolutionDate, elapsed]
+        - in: query
+          name: sortDir
+          schema: { type: string, enum: [asc, desc], default: desc }
+        - in: query
+          name: qId
+          description: Search by incident number or ID
+          schema: { type: string }
+        - in: query
+          name: qType
+          schema: { type: string }
+        - in: query
+          name: qSubtype
+          schema: { type: string }
+        - in: query
+          name: incidentType[]
+          style: form
+          explode: true
+          schema: { type: array, items: { type: integer, minimum: 1 } }
+        - in: query
+          name: incidentSubtype[]
+          style: form
+          explode: true
+          schema: { type: array, items: { type: integer, minimum: 1 } }
+        - in: query
+          name: status[]
+          style: form
+          explode: true
+          schema: { type: array, items: { type: string, enum: [new, initiated, escalated, resolution_rejected, waiting_resolution_approval, resolved, archived] } }
+        - in: query
+          name: workflowStage[]
+          style: form
+          explode: true
+          schema: { type: array, items: { type: string, enum: [draft, new, initiated, escalated, resolution_rejected, waiting_resolution_approval, resolved, archived] } }
+        - in: query
+          name: location[]
+          style: form
+          explode: true
+          schema: { type: array, items: { type: integer, minimum: 1 } }
+        - in: query
+          name: department[]
+          style: form
+          explode: true
+          schema: { type: array, items: { type: integer, minimum: 1 } }
+        - in: query
+          name: severity[]
+          style: form
+          explode: true
+          schema: { type: array, items: { type: integer, minimum: 1 } }
+        - in: query
+          name: incidentDate[from]
+          description: Filter by incident date (start of range, inclusive)
+          schema: { type: string, format: date }
+          example: "2024-01-01"
+        - in: query
+          name: incidentDate[to]
+          description: Filter by incident date (end of range, inclusive)
+          schema: { type: string, format: date }
+          example: "2024-12-31"
+        - in: query
+          name: incidentDate[empty]
+          description: Include records with NULL incident_date
+          schema: { type: boolean }
+        - in: query
+          name: reportDate[from]
+          description: Filter by report creation date (start of range, inclusive)
+          schema: { type: string, format: date-time }
+          example: "2024-01-01T00:00:00Z"
+        - in: query
+          name: reportDate[to]
+          description: Filter by report creation date (end of range, inclusive)
+          schema: { type: string, format: date-time }
+          example: "2024-12-31T23:59:59Z"
+        - in: query
+          name: reportDate[empty]
+          description: Include records with NULL date_report
+          schema: { type: boolean }
+        - in: query
+          name: resolutionDate[from]
+          description: Filter by resolution date (start of range, inclusive)
+          schema: { type: string, format: date-time }
+          example: "2024-01-01T00:00:00Z"
+        - in: query
+          name: resolutionDate[to]
+          description: Filter by resolution date (end of range, inclusive)
+          schema: { type: string, format: date-time }
+          example: "2024-12-31T23:59:59Z"
+        - in: query
+          name: resolutionDate[empty]
+          description: Include records with NULL resolution_date
+          schema: { type: boolean }
+        - in: query
+          name: lastUpdatedDate[from]
+          description: Filter by last updated date (start of range, inclusive)
+          schema: { type: string, format: date-time }
+          example: "2024-01-01T00:00:00Z"
+        - in: query
+          name: lastUpdatedDate[to]
+          description: Filter by last updated date (end of range, inclusive)
+          schema: { type: string, format: date-time }
+          example: "2024-12-31T23:59:59Z"
+        - in: query
+          name: lastUpdatedDate[empty]
+          description: Include records with NULL last_updated_date
+          schema: { type: boolean }
+        - in: query
+          name: elapsedBucket[]
+          style: form
+          explode: true
+          schema: { type: array, items: { type: string, enum: [lt1d, d1_3, d3_7, gt7d] } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListResponse'
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /incident-reports/{id}:
+    get:
+      summary: Get incident details
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/IncidentDetails' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /incident-reports/{id}/archive:
+    post:
+      summary: Archive (soft delete) an incident report
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        '204': { description: Archived }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /incident-reports/{id}/restore:
+    post:
+      summary: Restore a previously archived incident report
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        '204': { description: Restored }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /incident-reports/{id}/preview:
+    get:
+      summary: Get a signed URL to preview the incident report
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, minimum: 1 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PreviewResponse' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /catalog/incident-types:
+    get:
+      summary: Catalog of incident types
+      responses:
+        '200': { $ref: '#/components/responses/CatalogItems' }
+  /catalog/incident-subtypes:
+    get:
+      summary: Catalog of incident subtypes
+      responses:
+        '200': { $ref: '#/components/responses/CatalogItems' }
+  /catalog/statuses:
+    get:
+      summary: Catalog of statuses
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StatusCatalog' }
+  /catalog/workflow-stages:
+    get:
+      summary: Catalog of workflow stages
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/StatusCatalog' }
+  /catalog/severity-levels:
+    get:
+      summary: Catalog of severity levels
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id: { type: integer }
+                        name: { type: string }
+                        description: { type: string }
+  /catalog/locations:
+    get:
+      summary: Catalog of locations
+      responses:
+        '200': { $ref: '#/components/responses/CatalogItems' }
+  /catalog/departments:
+    get:
+      summary: Catalog of departments
+      responses:
+        '200': { $ref: '#/components/responses/CatalogItems' }
+components:
+  responses:
+    BadRequest:
+      description: Bad Request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    NotFound:
+      description: Not Found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    CatalogItems:
+      description: OK
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id: { type: integer }
+                    name: { type: string }
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code: { type: string }
+            message: { type: string }
+            field: { type: string, nullable: true }
+    PreviewResponse:
+      type: object
+      properties:
+        url: { type: string, format: uri }
+        expiresAt: { type: string, format: date-time }
+    StatusCatalog:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              code:
+                type: string
+                enum: [draft, new, initiated, escalated, resolution_rejected, waiting_resolution_approval, resolved, archived]
+              name:
+                type: string
+    ListResponse:
+      type: object
+      properties:
+        rows:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListRow'
+        meta:
+          type: object
+          properties:
+            page: { type: integer }
+            pageSize: { type: integer }
+            total: { type: integer }
+            sortBy: { type: string }
+            sortDir: { type: string }
+    ListRow:
+      type: object
+      properties:
+        id: { type: integer }
+        incidentNumber: { type: string }
+        type:
+          type: object
+          properties:
+            id: { type: integer }
+            name: { type: string }
+        subtypes:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: integer }
+              name: { type: string }
+        status:
+          type: string
+          enum: [new, initiated, escalated, resolution_rejected, waiting_resolution_approval, resolved, archived]
+        workflowStage:
+          type: string
+          enum: [draft, new, initiated, escalated, resolution_rejected, waiting_resolution_approval, resolved, archived]
+        severity:
+          type: object
+          nullable: true
+          properties:
+            id: { type: integer }
+            name: { type: string }
+            description: { type: string }
+        location:
+          type: object
+          properties:
+            id: { type: integer }
+            name: { type: string }
+        department:
+          type: object
+          properties:
+            id: { type: integer }
+            name: { type: string }
+        createdAt: 
+          type: string
+          format: date-time
+          description: Alias for reportDate (for backward compatibility)
+        incidentDate: { type: string, format: date }
+        reportDate: 
+          type: string
+          format: date-time
+          description: When the report was created (maps to date_report)
+        lastUpdatedAt: 
+          type: string
+          format: date-time
+          nullable: true
+          description: Last modification timestamp (maps to last_updated_date)
+        resolutionDate:
+          type: string
+          format: date-time
+          nullable: true
+        elapsed:
+          type: object
+          properties:
+            bucket:
+              type: string
+              enum: [lt1d, d1_3, d3_7, gt7d]
+            text: { type: string }
+        actions:
+          type: object
+          properties:
+            canDownload: { type: boolean }
+            canDelete: { type: boolean }
+            canRestore: { type: boolean }
+            canEdit: { type: boolean }
+            legacy:
+              type: array
+              items: { type: string }
+    IncidentDetails:
+      type: object
+      description: Placeholder for details payload; to be defined in subsequent iterations
+      properties:
+        id: { type: integer }
+        incidentNumber: { type: string }

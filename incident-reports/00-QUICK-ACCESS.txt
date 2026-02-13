@@ -1,0 +1,184 @@
+╔════════════════════════════════════════════════════════════════════════╗
+║         📚 INCIDENT REPORTS DOCUMENTATION - QUICK ACCESS              ║
+╚════════════════════════════════════════════════════════════════════════╝
+
+Epic: LSFB-62813 - Incident Reports: Workflow table revamp
+Status: Phase 3 Complete (25% overall progress)
+Last Updated: 2026-01-28
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 KEY DOCUMENTS (START HERE)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⭐ MASTER PLAN (Read this first):
+   01-planning/implementation-plan.md
+   - 850+ lines, comprehensive project roadmap
+   - 8 phases, 78-105 days estimated
+   - All technical specs, testing strategy, progress tracker
+
+📘 DEVELOPER GUIDE:
+   04-bundle/README.md
+   - Bundle structure and configuration
+   - Development guidelines (PHP 7.2 constraints)
+   - Service patterns, testing instructions
+
+📋 VERSION HISTORY:
+   04-bundle/CHANGELOG.md
+   - Complete changelog from planning to scaffolding
+   - Phase 1 (Database) + Phase 3 (Bundle) complete
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📂 DOCUMENT STRUCTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+00-INDEX.md                     Documentation index with links
+00-QUICK-ACCESS.txt            This file (quick navigation)
+
+01-planning/
+├── implementation-plan.md      ⭐ Master plan (56KB, 1500+ lines)
+├── backend-design.md           Software Design Document (SDD)
+└── database-migration-plan.md  Migration strategy (4 migrations)
+
+02-technical/
+├── algorithms-explained.md     CTE optimization + Permissions algorithm
+├── cte-implementation-plan.md  N+1 solution (98% query reduction)
+├── cte-summary.md             Quick CTE reference
+└── date-filters-implementation.md  4 date range filters guide
+
+03-api/
+└── openapi.yaml               OpenAPI 3.0 spec (8 endpoints)
+
+04-bundle/
+├── README.md                  Developer guide (389 lines)
+└── CHANGELOG.md               Version history
+
+05-discovery/
+├── IncidentTracking_ActionsMatrix_Consolidated.md  ⭐ PRIMARY actions reference
+├── DOCUMENTATION_PLAN.md      Documentation strategy
+├── business/                  Business requirements (3 files)
+├── findings/                  Discovery findings (5 files)
+└── technical/                 Database ERD
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 COMMON TASKS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Starting Phase 4 implementation?
+→ Read: 01-planning/implementation-plan.md (Phase 4 section)
+→ Read: 04-bundle/README.md (Development guidelines)
+→ Reference: 02-technical/algorithms-explained.md (CTE algorithm)
+
+Understanding permission rules (canEdit/canDelete/etc)?
+→ PRIMARY: 05-discovery/IncidentTracking_ActionsMatrix_Consolidated.md
+→ Implementation: 02-technical/algorithms-explained.md
+
+Understanding the CTE optimization?
+→ Quick: 02-technical/cte-summary.md
+→ Detailed: 02-technical/cte-implementation-plan.md
+
+Implementing API endpoints?
+→ Spec: 03-api/openapi.yaml
+→ Design: 01-planning/backend-design.md
+
+Understanding database changes?
+→ Read: 01-planning/database-migration-plan.md
+→ ERD: 05-discovery/technical/database-erd.md
+→ Status: Phase 1 complete (232,308 records migrated)
+
+Checking project progress?
+→ Read: 01-planning/implementation-plan.md (Progress Tracker section)
+→ Current: Phase 3 complete, ready for Phase 4
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔗 REPOSITORY REFERENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Repository location:
+~/Documents/workspace/lms-medtrainer/
+
+Bundle location:
+symfony/src/MedTrainer/IncidentReportsAPIBundle/
+
+Minimal README in bundle:
+symfony/src/MedTrainer/IncidentReportsAPIBundle/README.md
+(Points back to this external documentation)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 PROJECT STATUS SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Overall Progress: 25% (2 of 8 phases complete)
+
+✅ Phase 1: Database Foundation (2026-01-27)
+   - 4 migrations executed
+   - 232,308 records migrated
+   - 5 new fields + 5 indexes
+
+✅ Phase 3: Bundle Scaffolding (2026-01-28)
+   - IncidentReportsAPIBundle created
+   - Autowiring configured
+   - Modern Symfony 4.4 structure
+
+⏳ Phase 4: Repository & DTO Implementation (Next)
+   - Estimated: 10-12 days
+   - CTE-optimized queries
+   - Server-side permissions
+   - Core list endpoint
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 TIPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Open all docs in IDE:
+   code ~/Documents/workspace/lms-medtrainer-docs/incident-reports/
+
+2. Search across all docs:
+   cd ~/Documents/workspace/lms-medtrainer-docs/incident-reports/
+   grep -r "search term" .
+
+3. View specific document:
+   cat 01-planning/implementation-plan.md | less
+
+4. Navigate with tree view:
+   tree ~/Documents/workspace/lms-medtrainer-docs/incident-reports/
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🏗️ ARCHITECTURE AT A GLANCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Technology Stack:
+- Backend: PHP 7.1.33 (7.2 syntax), Symfony 4.4
+- Database: MySQL 8.0.15
+- Frontend: React 17 + TypeScript (separate team)
+
+Key Features:
+- CTE-optimized queries (98% reduction: 201→2 queries)
+- Server-side permission calculation
+- Feature flag controlled rollout
+- Path convention: /ajax/spa/incident-reports/*
+
+Performance Targets:
+- p95 < 250ms
+- p99 < 500ms
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📞 CONTACT & SUPPORT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Epic: LSFB-62813
+JIRA Board: LMS New Features / Bugs (LSFB)
+Slack: #incident-reports-revamp
+
+Documentation moved to external directory: 2026-01-28
+Total documentation size: 252KB (11 files)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
